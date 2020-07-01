@@ -4,6 +4,10 @@ open System.IO
 open Microsoft.FSharp.Core
 // File.ReadAllLines
 
+
+let add a b = a + b
+
+
 [<EntryPoint>]
 let main argv =
     let x = 10
