@@ -1,11 +1,23 @@
-﻿// Learn more about F# at http://fsharp.org
-
-open System.IO
-open Microsoft.FSharp.Core
-// File.ReadAllLines
+﻿open System.IO
+open System.Text.RegularExpressions
+open SourceTypes
 
 
-let add a b = a + b
+let filterLib header =
+    header.ToString().Contains("/")
+
+let splitLibName header =
+    let sheader = header.ToString()
+    let head = sheader.Substring(sheader.IndexOf("<") + 1).Split("/") |> Array.toList
+    match head with
+    | [x; xs] -> x
+    |  _ -> ""
+
+let getHeaders filename =
+    let regex = """#include{1}.*<{1}.*>{1}"""
+    let lines = File.ReadAllText(filename)
+    Regex.Matches(lines, regex)
+    |> Seq.map (fun x -> x.Value)
 
 
 [<EntryPoint>]
