@@ -19,6 +19,11 @@ type Executable = {
     DependsOn: List<Library>
 }
 
+type CompilationDirectory = {
+    Executables: List<Executable>;
+    Library: Library;
+}
+
 type IncludeStatement = IncludeStatement of string
 
 let sourceCode (line:string) =
@@ -57,7 +62,7 @@ let getIncludeStatements (source:SourceCode) =
 
 
 
-let filterForExecutables library = 
+let compilationDirectory library = 
     let hasMainFunc src library =
         let lines = File.ReadAllText(library.FullPath + "/" + src)
         let regex = """int main\(.+\)"""
@@ -68,8 +73,11 @@ let filterForExecutables library =
         match n with
         | SourceFile name -> hasMainFunc name library
         | _ -> false
-    List.filter isExe library.Files
-    |> List.map (fun x -> {Name=x; DependsOn=[library]})
+    let executables = List.filter isExe library.Files
+    let updatedFiles = List.filter (fun x -> not (List.contains x executables)) library.Files
+    let updatedLib = { library with Files=updatedFiles}
+    let updatedExecutables =  executables |> List.map (fun x -> {Name=x; DependsOn=[updatedLib]})
+    {Executables=updatedExecutables; Library=updatedLib}
 
 
 
@@ -82,7 +90,9 @@ let buildLibrary path =
         |> Array.map (getBaseName >> sourceCode)
         |> Array.choose id
         |> Array.toList
-    {Name=(Lib (getBaseName path)); Files=files; FullPath=path}
+    let name = getBaseName path
+    let libName = if name = "src" then Lib(getBaseName(Directory.GetParent(path).ToString())) else Lib(name)
+    {Name=libName; Files=files; FullPath=path}
 
 let getAllSourceCode (start:string) =
     let rec recurseLibraries paths libs =
@@ -93,6 +103,16 @@ let getAllSourceCode (start:string) =
     let directories = Directory.GetDirectories start |> Array.toList
     let x = [buildLibrary start]
     recurseLibraries directories x
+
+
+// let 
+    // 
+
+// let compilationUnit path =
+//     let srcCode = getAllSourceCode path
+//     let executables = List.collect filterForExecutables srcCode
+
+
 
 
 
