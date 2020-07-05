@@ -55,7 +55,7 @@ let ``Test randomNumString generates new string every time`` () =
     Assert.True(a<>b)
 
 [<Fact>]
-let ``Test 1 + 1 = 2`` () =
+let ``addLibrary returns proper list with contents`` () =
     let project = getTestProject 5
     generateMainAndHeader project.SrcDir
     let files = getAllSourceCode (project.SrcDir)
