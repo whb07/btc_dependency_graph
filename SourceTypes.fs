@@ -90,9 +90,7 @@ let buildLibrary path =
         |> Array.map (getBaseName >> sourceCode)
         |> Array.choose id
         |> Array.toList
-    let name = getBaseName path
-    let libName = if name = "src" then Lib(getBaseName(Directory.GetParent(path).ToString())) else Lib(name)
-    {Name=libName; Files=files; FullPath=path}
+    {Name=Lib(getBaseName path); Files=files; FullPath=path}
 
 let getAllSourceCode (start:string) =
     let rec recurseLibraries paths libs =
@@ -103,14 +101,6 @@ let getAllSourceCode (start:string) =
     let directories = Directory.GetDirectories start |> Array.toList
     let x = [buildLibrary start]
     recurseLibraries directories x
-
-
-// let 
-    // 
-
-// let compilationUnit path =
-//     let srcCode = getAllSourceCode path
-//     let executables = List.collect filterForExecutables srcCode
 
 
 
