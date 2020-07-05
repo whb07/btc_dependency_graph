@@ -50,11 +50,3 @@ let addExecutable (executable:Executable) =
 
 let listAddExecutables (compilation:CompilationDirectory) =
     List.map addExecutable compilation.Executables
-
-
-    // let libraryString (libname:string) (sourcefiles:List<SourceCode>) =
-    //     let body = List.map commandLine sourcefiles
-    //     cmakeCommand "add_library" (upper libname) body
-    // let (Lib name) = compilation.Library.Name
-    // let libName = if name = "src" then getBaseName(Directory.GetParent(compilation.Library.FullPath).ToString()) else name
-    // libraryString libName compilation.Library.Files
